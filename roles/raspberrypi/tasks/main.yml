@@ -36,6 +36,7 @@
 - name: Set detected_distribution_major_version
   set_fact:
     detected_distribution_major_version: "{{ ansible_facts.lsb.major_release }}"
+    detected_distribution_codename: "{{ ansible_facts.lsb.codename }}"
   when:
     - detected_distribution | default("") == "Raspbian"
 
@@ -43,8 +44,10 @@
   include_tasks: "{{ item }}"
   with_first_found:
     - "prereq/{{ detected_distribution }}-{{ detected_distribution_major_version }}.yml"
+    - "prereq/{{ detected_distribution }}-{{ detected_distribution_codename }}.yml"
     - "prereq/{{ detected_distribution }}.yml"
     - "prereq/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "prereq/{{ ansible_distribution }}-{{ ansible_distribution_codename }}.yml"
     - "prereq/{{ ansible_distribution }}.yml"
     - "prereq/default.yml"
   when:
